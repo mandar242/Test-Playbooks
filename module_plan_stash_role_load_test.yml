@@ -1,0 +1,28 @@
+---
+- name: Test the cloud.terraform_ops.module_plan_stash role (load functionality)
+  hosts: localhost
+  gather_facts: true
+  vars:
+    module_plan_stash_var_name_val: my_test_stashed_plan
+    module_plan_stash_load_plan_file_name_val: loaded_from_stashed_var.tfplan
+  tasks:
+    - name: Create temporary directory to run terraform configuration
+      ansible.builtin.tempfile:
+        state: directory
+      register: tfdir
+
+    - name: Block for cloud.terraform_ops.module_plan_stash example (load functionality)
+      block:
+        - name: Stash the Terraform plan file into variable "{{ module_plan_stash_var_name_val }}"
+          ansible.builtin.include_role:
+            name: cloud.terraform_ops.module_plan_stash
+          vars:
+            module_plan_stash_operation: load
+            module_plan_stash_var_name: "{{ module_plan_stash_var_name_val }}" # if not provided, defaults to "terraform_plan"
+            module_plan_stash_plan_file_path: "{{ tfdir.path }}/{{ module_plan_stash_load_plan_file_name_val }}"
+
+      always:
+        - name: Delete temporary directory
+          ansible.builtin.file:
+            state: absent
+            path: "{{ tfdir.path }}"
