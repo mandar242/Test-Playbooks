@@ -1,0 +1,15 @@
+---
+- name: Test the cloud.terraform_ops.module_plan_stash role (load functionality)
+  hosts: localhost
+  gather_facts: false
+  vars:
+    module_plan_stash_var_name_val: ""
+    module_plan_stash_plan_file_path_val: ""
+  tasks:
+    - name: Create a gcs bucket for Terraform remote backend
+      ansible.builtin.include_role:
+        name: cloud.terraform_ops.module_plan_stash
+      vars:
+        module_plan_stash_operation: load
+        module_plan_stash_var_name: "{{ module_plan_stash_var_name_val }}" # if not provided, defaults to "terraform_plan"
+        module_plan_stash_plan_file_path: "{{ module_plan_stash_plan_file_path_val }}" #"path_to_my_plan_file"
