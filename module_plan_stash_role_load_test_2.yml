@@ -16,7 +16,7 @@
 
     - name: Apply the Terraform configuration
       cloud.terraform.terraform:
-        project_path: "."
+        project_path: "./"
         force_init: true
         plan_file: "{{ plan_stash_plan_file_path_val }}"
         state: present
