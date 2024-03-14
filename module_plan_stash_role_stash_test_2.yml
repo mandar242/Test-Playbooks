@@ -1,23 +1,23 @@
 ---
-- name: Test the cloud.terraform_ops.module_plan_stash role (stash functionality)
+- name: Test the cloud.terraform_ops.plan_stash role (stash functionality)
   hosts: localhost
   gather_facts: true
   vars:
     terraform_existing_plan_url: ""
-    module_plan_stash_var_name_val: my_test_stashed_plan
-    module_plan_stash_generate_plan_file_name_val: ./myplan.tfplan
+    plan_stash_var_name_val: my_test_stashed_plan
+    plan_stash_generate_plan_file_name_val: ./myplan.tfplan
   tasks:
 
-    - name: Download terraform plan file and store as "{{ module_plan_stash_generate_plan_file_name_val }}"
+    - name: Download terraform plan file and store as "{{ plan_stash_generate_plan_file_name_val }}"
       uri:
-          dest: "{{ module_plan_stash_generate_plan_file_name_val }}"
+          dest: "{{ plan_stash_generate_plan_file_name_val }}"
           url: "{{ terraform_existing_plan_url }}"
       when: terraform_existing_plan_url is defined and terraform_existing_plan_url | length != 0
 
-    - name: Stash the Terraform plan file into variable "{{ module_plan_stash_var_name_val }}"
+    - name: Stash the Terraform plan file into variable "{{ plan_stash_var_name_val }}"
       ansible.builtin.include_role:
-        name: cloud.terraform_ops.module_plan_stash
+        name: cloud.terraform_ops.plan_stash
       vars:
-        module_plan_stash_operation: stash
-        module_plan_stash_var_name: "{{ module_plan_stash_var_name_val }}" # if not provided, defaults to "terraform_plan"
-        module_plan_stash_plan_file_path: "{{ module_plan_stash_generate_plan_file_name_val }}"
+        plan_stash_operation: stash
+        plan_stash_var_name: "{{ plan_stash_var_name_val }}" # if not provided, defaults to "terraform_plan"
+        plan_stash_plan_file_path: "{{ plan_stash_generate_plan_file_name_val }}"

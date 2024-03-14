@@ -1,20 +1,20 @@
 ---
-- name: Test the cloud.terraform_ops.module_plan_stash role (stash functionality)
+- name: Test the cloud.terraform_ops.plan_stash role (stash functionality)
   hosts: localhost
   gather_facts: true
   vars:
     terraform_existing_config_url: ""
     terraform_existing_plan_url: ""
-    module_plan_stash_generate_plan_file_val: false
-    module_plan_stash_var_name_val: my_test_stashed_plan
-    module_plan_stash_generate_plan_file_name_val: myplan.tfplan
+    plan_stash_generate_plan_file_val: false
+    plan_stash_var_name_val: my_test_stashed_plan
+    plan_stash_generate_plan_file_name_val: myplan.tfplan
   tasks:
     - name: Create temporary directory to run terraform configuration
       ansible.builtin.tempfile:
         state: directory
       register: tfdir
 
-    - name: Block for cloud.terraform_ops.module_plan_stash example (stash functionality)
+    - name: Block for cloud.terraform_ops.plan_stash example (stash functionality)
       block:
         - name: Download Terraform configuration
           uri:
@@ -22,21 +22,21 @@
             url: "{{ terraform_existing_config_url }}"
           when: terraform_existing_config_url is defined and terraform_existing_config_url | length != 0
 
-        - name: Download terraform plan file and store to temp dir as "{{ module_plan_stash_generate_plan_file_name_val }}"
+        - name: Download terraform plan file and store to temp dir as "{{ plan_stash_generate_plan_file_name_val }}"
           uri:
-             dest: "{{ tfdir.path }}/{{module_plan_stash_generate_plan_file_name_val}}"
+             dest: "{{ tfdir.path }}/{{plan_stash_generate_plan_file_name_val}}"
              url: "{{ terraform_existing_plan_url }}"
           when: terraform_existing_plan_url is defined and terraform_existing_plan_url | length != 0
 
         - name: Stash the Terraform plan file into variable "my_test_stashed_plan"
           ansible.builtin.include_role:
-            name: cloud.terraform_ops.module_plan_stash
+            name: cloud.terraform_ops.plan_stash
           vars:
-            module_plan_stash_operation: stash
-            module_plan_stash_var_name: "{{ module_plan_stash_var_name_val }}" # if not provided, defaults to "terraform_plan"
-            module_plan_stash_plan_file_path: "{{ tfdir.path }}/{{module_plan_stash_generate_plan_file_name_val}}"
-            module_plan_stash_tf_project_path: "{{ tfdir.path }}"
-            module_plan_stash_generate_plan_file: "{{ module_plan_stash_generate_plan_file_val }}" # set to I(true) to generate new plan file from config file, this will ignore plan file provided using "terraform_existing_plan_url"
+            plan_stash_operation: stash
+            plan_stash_var_name: "{{ plan_stash_var_name_val }}" # if not provided, defaults to "terraform_plan"
+            plan_stash_plan_file_path: "{{ tfdir.path }}/{{plan_stash_generate_plan_file_name_val}}"
+            plan_stash_tf_project_path: "{{ tfdir.path }}"
+            plan_stash_generate_plan_file: "{{ plan_stash_generate_plan_file_val }}" # set to I(true) to generate new plan file from config file, this will ignore plan file provided using "terraform_existing_plan_url"
 
       always:
 
