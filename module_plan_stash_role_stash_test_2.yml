@@ -9,11 +9,25 @@
     plan_stash_generate_plan_file_name_val: ./myplan.tfplan
   tasks:
 
-    - name: Download terraform plan file and store as "{{ plan_stash_generate_plan_file_name_val }}"
+    - name: Download terraform config file and store as "main.tf"
       uri:
-          dest: "{{ plan_stash_generate_plan_file_name_val }}"
-          url: "{{ terraform_existing_plan_url }}"
-      when: terraform_existing_plan_url is defined and terraform_existing_plan_url | length != 0
+          dest: ./main.tf
+          url: "{{ terraform_existing_config_url }}"
+      when: terraform_existing_config_url is defined and terraform_existing_config_url | length != 0
+
+    - name: Generate planfile by running Terraform plan
+      cloud.terraform.terraform:
+        project_path: ./
+        force_init: true
+        plan_file: "{{ plan_stash_generate_plan_file_name_val }}"
+        state: present
+      check_mode: true
+
+    # - name: Download terraform plan file and store as "{{ plan_stash_generate_plan_file_name_val }}"
+    #   uri:
+    #       dest: "{{ plan_stash_generate_plan_file_name_val }}"
+    #       url: "{{ terraform_existing_plan_url }}"
+    #   when: terraform_existing_plan_url is defined and terraform_existing_plan_url | length != 0
 
     - name: Stash the Terraform plan file into variable "{{ plan_stash_var_name_val }}"
       ansible.builtin.include_role:
