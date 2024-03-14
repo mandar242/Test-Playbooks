@@ -3,10 +3,10 @@
   hosts: localhost
   gather_facts: true
   vars:
-    terraform_existing_config_url: ""
-    terraform_existing_plan_url: ""
+    # terraform_existing_plan_url: ""
+    terraform_existing_config_url: "https://raw.githubusercontent.com/mandar242/Test-Playbooks/main/main.tf"
     plan_stash_var_name_val: my_test_stashed_plan
-    plan_stash_generate_plan_file_name_val: ./myplan.tfplan
+    plan_stash_plan_file_path_val: ./myplan.tfplan
   tasks:
 
     - name: Download terraform config file and store as "main.tf"
