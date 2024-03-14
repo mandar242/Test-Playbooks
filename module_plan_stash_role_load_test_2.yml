@@ -13,3 +13,10 @@
         module_plan_stash_operation: load
         module_plan_stash_var_name: "{{ module_plan_stash_var_name_val }}" # if not provided, defaults to "terraform_plan"
         module_plan_stash_plan_file_path: "{{ module_plan_stash_plan_file_path_val }}" #"path_to_my_plan_file"
+
+    - name: Apply the Terraform configuration
+      cloud.terraform.terraform:
+        project_path: "."
+        force_init: true
+        plan_file: "{{ plan_stash_plan_file_path_val }}"
+        state: present
