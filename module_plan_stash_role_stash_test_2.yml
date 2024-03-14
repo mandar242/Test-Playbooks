@@ -9,12 +9,6 @@
     plan_stash_generate_plan_file_name_val: ./myplan.tfplan
   tasks:
 
-    - name: Download terraform config file and store as "main.tf"
-      uri:
-          dest: ./main.tf
-          url: "{{ terraform_existing_config_url }}"
-      when: terraform_existing_config_url is defined and terraform_existing_config_url | length != 0
-
     - name: Download terraform plan file and store as "{{ plan_stash_generate_plan_file_name_val }}"
       uri:
           dest: "{{ plan_stash_generate_plan_file_name_val }}"

@@ -6,6 +6,13 @@
     plan_stash_var_name_val: ""
     plan_stash_plan_file_path_val: ""
   tasks:
+
+    - name: Download terraform config file and store as "main.tf"
+      uri:
+          dest: ./main.tf
+          url: "{{ terraform_existing_config_url }}"
+      when: terraform_existing_config_url is defined and terraform_existing_config_url | length != 0
+
     - name:  Load the Terraform plan from variable "{{ plan_stash_var_name_val }}" into file "{{ plan_stash_plan_file_path_val }}"
       ansible.builtin.include_role:
         name: cloud.terraform_ops.plan_stash
