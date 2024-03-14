@@ -6,7 +6,7 @@
     plan_stash_var_name_val: ""
     plan_stash_plan_file_path_val: ""
   tasks:
-    - name: Create a gcs bucket for Terraform remote backend
+    - name:  Load the Terraform plan from variable "{{ plan_stash_var_name_val }}" into file "{{ plan_stash_plan_file_path_val }}"
       ansible.builtin.include_role:
         name: cloud.terraform_ops.plan_stash
       vars:
