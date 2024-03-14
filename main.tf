@@ -1,4 +1,3 @@
-# Config to generate random string
 terraform {
   required_providers {
     random = {
