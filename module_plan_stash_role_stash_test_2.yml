@@ -1,17 +1,16 @@
 ---
-- name: Test the cloud.terraform_ops.plan_stash role (stash functionality)
+- name: Test the plan_stash module
   hosts: localhost
   gather_facts: true
   vars:
-    # terraform_existing_plan_url: ""
     terraform_existing_config_url: "https://raw.githubusercontent.com/mandar242/Test-Playbooks/main/main.tf"
     plan_stash_var_name_val: my_test_stashed_plan
-    plan_stash_plan_file_path_val: ./myplan.tfplan
+    plan_stash_generate_plan_file_name_val: ./myplan.tfplan
   tasks:
 
-    - name: Download terraform config file and store as "main.tf"
+    - name: Download terraform config file and store as "rand_string.tf"
       uri:
-          dest: ./main.tf
+          dest: ./rand_string.tf
           url: "{{ terraform_existing_config_url }}"
       when: terraform_existing_config_url is defined and terraform_existing_config_url | length != 0
 
@@ -30,9 +29,7 @@
     #   when: terraform_existing_plan_url is defined and terraform_existing_plan_url | length != 0
 
     - name: Stash the Terraform plan file into variable "{{ plan_stash_var_name_val }}"
-      ansible.builtin.include_role:
-        name: cloud.terraform_ops.plan_stash
-      vars:
-        plan_stash_operation: stash
-        plan_stash_var_name: "{{ plan_stash_var_name_val }}" # if not provided, defaults to "terraform_plan"
-        plan_stash_plan_file_path: "{{ plan_stash_generate_plan_file_name_val }}"
+      cloud.terraform.plan_stash:
+        state: stash
+        var_name: "{{ plan_stash_var_name_val }}" # if not provided, defaults to "terraform_plan"
+        path: "{{ plan_stash_generate_plan_file_name_val }}"
